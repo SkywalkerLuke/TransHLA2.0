@@ -65,9 +65,7 @@ TransHLA2.0 uses standardized inputs for consistent processing across all stages
 Required columns: `peptide`, `pseudosequence` (or `hla_pseudo`), `label`
 
 Example data files:
-  - `data/TransHLA_train_version_8_clean.txt`
-  - `data/TransHLA_val_version_8_clean.txt`
-  - `data/TransHLA_test_version_8_clean.txt`
+  - `data/Example_train.txt`
 
 ### Note on PRE Utilities
 
