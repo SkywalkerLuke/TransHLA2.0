@@ -49,8 +49,8 @@ TransHLA2.0 uses standardized inputs for consistent processing across all stages
 
 ### Input Format
 
-- **peptide**: amino-acid string (uppercased), typically 8–15 residues
-- **pseudosequence**: HLA pseudo-sequence (length typically 34–46; default padding target = 36)
+- **peptide**: amino-acid string (uppercased), typically 8–14 residues
+- **pseudosequence**: HLA pseudo-sequence (length typically 34)
 - **label**: binary (0/1) for binding/immunogenicity classification
 
 ### Tokenization and Lengths
