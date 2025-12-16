@@ -105,7 +105,7 @@ pep_ids = pad_to_len(pep_ids, PEP_LEN, PAD_ID)
 pep_tensor = torch.tensor([pep_ids], dtype=torch.long, device=device)
 with torch.no_grad():
     logits, features = model(pep_tensor)
-    prob_bind = F.softmax(logits, dim=1)[0, 1].item()
+    prob_bind = logits[0][1].item()
     pred = int(prob_bind >= 0.5)
 
 print({"peptide": peptide, "pre_prob": round(prob_bind, 6), "label": pred})
@@ -145,8 +145,8 @@ batch = [
 
 # 批量分词与填充
 pep_ids_batch = []
-for item in batch:
-    pep = item["peptide"]
+for  in batch:
+    pep = ["peptide"]
     ids = tok(pep, add_special_tokens=True)["input_ids"]
     ids = pad_to_len(ids, PEP_LEN, PAD_ID)
     pep_ids_batch.append(ids)
@@ -163,10 +163,10 @@ with torch.no_grad():
 labels = (probs >= 0.5).long().tolist()
 
 # 打印结果
-for i, item in enumerate(batch):
+for i,  in enumerate(batch):
     print({
-        "peptide": item["peptide"],
-        "pre_prob": float(probs[i].item()),
+        "peptide": ["peptide"],
+        "pre_prob": float(probs[i].()),
         "label": labels[i]
     })
 ```
@@ -214,7 +214,7 @@ hla_tensor = torch.tensor([hla_ids], dtype=torch.long, device=device)
 
 with torch.no_grad():
     logits, features = model(pep_tensor, hla_tensor)  # logits: [1, 2]
-    prob_bind = F.softmax(logits, dim=1)[0, 1].item()
+    prob_bind =logits[0][1].item()
     pred = int(prob_bind >= 0.5)
 
 print({"peptide": peptide, "bind_prob": round(prob_bind, 6), "label": pred})
@@ -256,7 +256,7 @@ hla_tensor = torch.tensor(hla_ids_batch, dtype=torch.long, device=device)  # [B,
 
 with torch.no_grad():
     logits, _ = model(pep_tensor, hla_tensor)   # [B, 2]
-    probs = F.softmax(logits, dim=1)[:, 1]
+    probs = logits[0][1].item()
 
 labels = (probs >= 0.5).long().tolist()
 
@@ -322,7 +322,7 @@ hla_tensor = torch.tensor([hla_ids], dtype=torch.long, device=device)
 
 with torch.no_grad():
     logits, features = model(pep_tensor, hla_tensor)
-    prob_immunogenic = F.softmax(logits, dim=1)[0, 1].item()
+    prob_immunogenic = logits[0][1].item()
 
 print({"peptide": peptide, "immunogenic_prob": round(prob_immunogenic, 6)})
 ```
