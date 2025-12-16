@@ -256,7 +256,7 @@ hla_tensor = torch.tensor(hla_ids_batch, dtype=torch.long, device=device)  # [B,
 
 with torch.no_grad():
     logits, _ = model(pep_tensor, hla_tensor)   # [B, 2]
-    probs = logits[0][1].item()
+    probs = logits[:,1].item()
 
 labels = (probs >= 0.5).long().tolist()
 
@@ -355,7 +355,7 @@ hla_tensor = torch.tensor(hla_ids_batch, dtype=torch.long, device=device)  # [B,
 
 with torch.no_grad():
     logits, _ = model(pep_tensor, hla_tensor)   # [B, 2]
-    probs = logits[0][1].item()
+    probs = logits[:,1].item()
 
 labels = (probs >= 0.5).long().tolist()
 
