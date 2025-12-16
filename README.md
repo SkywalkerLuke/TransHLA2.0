@@ -75,7 +75,7 @@ pep_ids = pad_to_len(pep_ids, PEP_LEN, PAD_ID)
 pep_tensor = torch.tensor([pep_ids], dtype=torch.long, device=device)
 with torch.no_grad():
     logits, features = model(pep_tensor)
-    prob_bind = F.softmax(logits, dim=1)[:, 1]
+    prob_bind = F.softmax(logits, dim=1)[0][1]
     pred = int(prob_bind >= 0.5)
 
 print({"peptide": peptide, "pre_prob": round(prob_bind, 6), "label": pred})
