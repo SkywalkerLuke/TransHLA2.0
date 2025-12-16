@@ -39,9 +39,6 @@ Requirements:
 Install core libs:
 - pip install torch transformers peft
 
-Install full training stack (from repo root):
-- pip install -r requirements.txt
-
 Tip: install torch matching your CUDA first, e.g. CUDA 12.1:
 - pip install torch --index-url https://download.pytorch.org/whl/cu121
 
