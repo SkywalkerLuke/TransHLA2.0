@@ -27,7 +27,26 @@ We introduce **TransHLA2.0**, a compact three-stage framework that addresses the
 
 
 
-## 1. Quick Start: TransHLA2.0-PRE
+## 1. Environment and Installation
+
+Requirements:
+- Python ≥ 3.8 (≥ 3.9 recommended for training scripts)
+- torch ≥ 2.0
+- transformers ≥ 4.40
+- peft (only if you use LoRA/PEFT adapters)
+- Optional (training scripts): pandas, numpy, scikit-learn, tqdm, matplotlib, seaborn
+
+Install core libs:
+- pip install torch transformers peft
+
+Install full training stack (from repo root):
+- pip install -r requirements.txt
+
+Tip: install torch matching your CUDA first, e.g. CUDA 12.1:
+- pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+
+## 2. Quick Start: TransHLA2.0-PRE
 
 TransHLA2.0-PRE enriches epitope-like peptides in peptide-only setting and provides standardized preprocessing for the pipeline. This stage enables early peptide-level pruning, reducing end-to-end runtime by filtering non-epitope candidates before expensive binding/immunogenicity predictions.
 
@@ -65,7 +84,7 @@ with torch.no_grad():
 print({"peptide": peptide, "pre_prob": round(prob_bind, 6), "label": pred})
 ```
 
-## 2. Quick Start: TransHLA2.0-BIND
+## 3. Quick Start: TransHLA2.0-BIND
 TransHLA2.0-BIND is a minimal Hugging Face-compatible PyTorch model for peptide–HLA binding classification using ESM. It resolves allele-specific binding/presentation with quantitative supervision integrating eluted ligands and IC50-annotated pairs, achieving **AUROC of 96.2%** and **AUPRC of 95.2%** on combined BA/EL evaluation.
 
 Inference workflow:
@@ -117,7 +136,7 @@ print({"peptide": peptide, "bind_prob": round(prob_bind, 6), "label": pred})
 
 
 
-## 3. Quick Start: TransHLA2.0-IM
+## 4. Quick Start: TransHLA2.0-IM
 
 TransHLA2.0-IM identifies immunogenic ligands from rigorously curated human T cell assays. The model architecture leverages:
 
@@ -168,25 +187,8 @@ with torch.no_grad():
 print({"peptide": peptide, "immunogenic_prob": round(prob_immunogenic, 6)})
 ```
 
-## 4. Environment and Installation
 
-Requirements:
-- Python ≥ 3.8 (≥ 3.9 recommended for training scripts)
-- torch ≥ 2.0
-- transformers ≥ 4.40
-- peft (only if you use LoRA/PEFT adapters)
-- Optional (training scripts): pandas, numpy, scikit-learn, tqdm, matplotlib, seaborn
-
-Install core libs:
-- pip install torch transformers peft
-
-Install full training stack (from repo root):
-- pip install -r requirements.txt
-
-Tip: install torch matching your CUDA first, e.g. CUDA 12.1:
-- pip install torch --index-url https://download.pytorch.org/whl/cu121
-
-## 5. Data Conventions (PRE)
+## 5. Data Conventions (PRE)(For Trainging)
 
 TransHLA2.0 uses standardized inputs for consistent processing across all stages:
 
