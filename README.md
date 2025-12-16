@@ -105,7 +105,7 @@ pep_ids = pad_to_len(pep_ids, PEP_LEN, PAD_ID)
 pep_tensor = torch.tensor([pep_ids], dtype=torch.long, device=device)
 with torch.no_grad():
     logits, features = model(pep_tensor)
-    prob_bind = logits[0][1].item()
+    prob_bind = F.softmax(logits, dim=1)[:, 1]
     pred = int(prob_bind >= 0.5)
 
 print({"peptide": peptide, "pre_prob": round(prob_bind, 6), "label": pred})
@@ -282,14 +282,8 @@ TransHLA2.0-IM identifies immunogenic ligands from rigorously curated human T ce
 
 The model achieves competitive performance with markedly fewer trainable parameters through LoRA, reducing memory footprint while maintaining discrimination power. Training/inference scripts are included locally (models.py, train_val.py, infer.py).
 
-### Model Variants (Ablations)
 
-- **Lora_ESM**: Base LoRA-ESM configuration
-- **NoCNN**: Without CNN branches
-- **NoTransformer**: Without per-stream Transformer encoders
-- **NoCrossAttention**: Without cross-attention layers
-
-### Usage Example
+### Single Sample Example
 
 ```python
 from transformers import AutoModel, AutoTokenizer
@@ -326,6 +320,50 @@ with torch.no_grad():
 
 print({"peptide": peptide, "immunogenic_prob": round(prob_immunogenic, 6)})
 ```
+### Batch Processing Example
+```python
+import torch
+import torch.nn.functional as F
+from transformers import AutoModel, AutoTokenizer
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model_id = "SkywalkerLu/TransHLA2.0-IM"
+model = AutoModel.from_pretrained(model_id, trust_remote_code=True).to(device).eval()
+tok = AutoTokenizer.from_pretrained("facebook/esm2_t33_650M_UR50D")
+
+PEP_LEN = 16
+HLA_LEN = 36
+PAD_ID = tok.pad_token_id if tok.pad_token_id is not None else 1
+
+def pad_to_len(ids_list, target_len, pad_id):
+    return (ids_list + [pad_id] * (target_len - len(ids_list))) if len(ids_list) < target_len else ids_list[:target_len]
+
+batch = [
+    {"peptide": "GILGFVFTL", "hla_pseudo": "YYSEYRNIYAQTDESNLYLSYDYYTWAERAYEWY", "label": 1},
+    {"peptide": "SIINFEKL", "hla_pseudo": "YYSEYRNIYAQTDESNLYLSYDYYTWAERAYEWY", "label": 0},
+]
+
+pep_ids_batch, hla_ids_batch = [], []
+for item in batch:
+    pep_ids = tok(item["peptide"], add_special_tokens=True)["input_ids"]
+    hla_ids = tok(item["hla_pseudo"], add_special_tokens=True)["input_ids"]
+    pep_ids_batch.append(pad_to_len(pep_ids, PEP_LEN, PAD_ID))
+    hla_ids_batch.append(pad_to_len(hla_ids, HLA_LEN, PAD_ID))
+
+pep_tensor = torch.tensor(pep_ids_batch, dtype=torch.long, device=device)  # [B, PEP_LEN]
+hla_tensor = torch.tensor(hla_ids_batch, dtype=torch.long, device=device)  # [B, HLA_LEN]
+
+with torch.no_grad():
+    logits, _ = model(pep_tensor, hla_tensor)   # [B, 2]
+    probs = logits[0][1].item()
+
+labels = (probs >= 0.5).long().tolist()
+
+for i, item in enumerate(batch):
+    print({"peptide": item["peptide"], "bind_prob": float(probs[i].item()), "label": labels[i]})
+```
+
+
 ## 6. Local Project Structure
 
 project/
