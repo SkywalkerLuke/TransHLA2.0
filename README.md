@@ -33,7 +33,7 @@ Requirements:
 - Python ≥ 3.8 (≥ 3.9 recommended for training scripts)
 - torch ≥ 2.0
 - transformers ≥ 4.40
-- peft (only if you use LoRA/PEFT adapters)
+- peft
 - Optional (training scripts): pandas, numpy, scikit-learn, tqdm, matplotlib, seaborn
 
 Install core libs:
